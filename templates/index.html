@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#1f3328">
+    <title>Move Your Ass</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand" href="/" aria-label="Daily Movement home">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                        <path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"/>
+                    </svg>
+                </span>
+                <span class="brand-copy">
+                    <strong>Move Your</strong>
+                    <span>Ass</span>
+                </span>
+            </a>
+
+            <div class="sidebar-section-head">
+                <span class="eyebrow">Users</span>
+                <button class="icon-button icon-button--small" id="add-person-button" type="button" aria-label="Add a person" title="Add a person">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                </button>
+            </div>
+
+            <nav class="people-list" id="people-list" aria-label="People"></nav>
+        </aside>
+
+        <main class="main">
+            <div class="view" id="view"></div>
+        </main>
+    </div>
+
+    <!-- Person form -->
+    <dialog class="modal" id="person-dialog" aria-labelledby="person-dialog-title">
+        <form id="person-form" novalidate>
+            <div class="modal-head">
+                <div>
+                    <h2 id="person-dialog-title">Add a person</h2>
+                </div>
+                <button class="icon-button modal-close" type="button" data-close-dialog="person-dialog" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <path d="m6 6 12 12M18 6 6 18"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" name="user_id" id="person-id">
+                <div class="avatar-preview-row">
+                    <span class="avatar avatar--large" id="person-preview" aria-hidden="true">🌿</span>
+                    <div class="field field--grow">
+                        <label for="person-name">Name</label>
+                        <input id="person-name" name="name" type="text" maxlength="60" placeholder="e.g. Sam" required autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field field--emoji">
+                        <label for="person-emoji">Emoji</label>
+                        <input id="person-emoji" name="emoji" type="text" maxlength="8" placeholder="🌿" autocomplete="off">
+                    </div>
+                    <div class="field field--grow">
+                        <span class="field-label">Colour</span>
+                        <div class="swatches" id="person-colors" role="radiogroup" aria-label="Person colour"></div>
+                    </div>
+                </div>
+
+                <p class="form-hint">Each person gets their own exercise set and history.</p>
+            </div>
+
+            <div class="modal-foot">
+                <button class="button button--ghost" type="button" data-close-dialog="person-dialog">Cancel</button>
+                <button class="button button--primary" type="submit" id="person-submit">Add person</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Exercise form -->
+    <dialog class="modal" id="exercise-dialog" aria-labelledby="exercise-dialog-title">
+        <form id="exercise-form" novalidate>
+            <div class="modal-head">
+                <div>
+                    <span class="eyebrow">Daily set</span>
+                    <h2 id="exercise-dialog-title">Add an exercise</h2>
+                </div>
+                <button class="icon-button modal-close" type="button" data-close-dialog="exercise-dialog" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <path d="m6 6 12 12M18 6 6 18"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" name="exercise_id" id="exercise-id">
+                <input type="hidden" name="user_id" id="exercise-user-id">
+                <div class="field">
+                    <label for="exercise-name">Exercise</label>
+                    <input id="exercise-name" name="name" type="text" maxlength="80" placeholder="e.g. Push-ups" required autocomplete="off">
+                </div>
+                <div class="field">
+                    <label for="exercise-target">Target <span class="label-optional">optional</span></label>
+                    <input id="exercise-target" name="target" type="text" maxlength="80" placeholder="e.g. 3 sets of 10" autocomplete="off">
+                </div>
+                <p class="form-hint">This exercise will be part of their daily routine.</p>
+            </div>
+
+            <div class="modal-foot">
+                <button class="button button--ghost" type="button" data-close-dialog="exercise-dialog">Cancel</button>
+                <button class="button button--primary" type="submit" id="exercise-submit">Add exercise</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Confirm dialog -->
+    <dialog class="modal modal--confirm" id="confirm-dialog" aria-labelledby="confirm-title">
+        <div class="modal-head">
+            <div>
+                <span class="eyebrow">Just checking</span>
+                <h2 id="confirm-title">Are you sure?</h2>
+            </div>
+        </div>
+        <div class="modal-body">
+            <p class="confirm-message" id="confirm-message"></p>
+        </div>
+        <div class="modal-foot">
+            <button class="button button--ghost" type="button" data-close-dialog="confirm-dialog">Cancel</button>
+            <button class="button button--danger" type="button" id="confirm-submit">Delete</button>
+        </div>
+    </dialog>
+
+    <div class="toast-region" id="toast-region" aria-live="assertive" aria-atomic="true"></div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</body>
+</html>
