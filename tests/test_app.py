@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from app import create_app
+from app import DEFAULT_USERS, create_app
 
 
 class WorkoutAppTestCase(unittest.TestCase):
@@ -24,8 +24,8 @@ class WorkoutAppTestCase(unittest.TestCase):
 
     def test_seeded_household(self):
         users = self.users()
-        self.assertEqual(len(users), 4)
-        self.assertEqual(users[0]["name"], "Me")
+        self.assertEqual(len(users), len(DEFAULT_USERS))
+        self.assertEqual(users[0]["name"], DEFAULT_USERS[0][0])
         self.assertEqual(users[0]["exercise_count"], 0)
 
     def test_user_crud(self):
@@ -105,7 +105,9 @@ class WorkoutAppTestCase(unittest.TestCase):
         self.assertEqual(dashboard["exercises"], [])
 
     def test_deleting_a_user_cascades(self):
-        user_id = self.users()[1]["id"]
+        user_id = self.client.post(
+            "/api/users", json={"name": "Cascade"}
+        ).get_json()["user"]["id"]
         exercise = self.client.post(
             f"/api/users/{user_id}/exercises",
             json={"name": "Squats"},

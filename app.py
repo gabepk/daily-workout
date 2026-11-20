@@ -21,6 +21,9 @@ def create_app(database_path: str | Path | None = None) -> Flask:
     app.config["DATABASE"] = str(
         database_path or os.environ.get("WORKOUT_DB", DEFAULT_DB)
     )
+    database = Path(app.config["DATABASE"])
+    if str(database) != ":memory:":
+        database.parent.mkdir(parents=True, exist_ok=True)
     app.json.sort_keys = False
 
     app.teardown_appcontext(close_db)

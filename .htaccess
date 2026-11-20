@@ -1,0 +1,13 @@
+Options +ExecCGI
+RewriteEngine On
+RewriteBase /
+
+# Never serve the database or repository internals
+RewriteRule ^(private|\.git|\.venv|__pycache__|tests)(/|$) - [F,L]
+
+# Let Apache hand the WSGI request through instead of rewriting it again
+RewriteRule ^(flask\.wsgi/.*)$ - [L]
+
+# Real files (CSS, JS, images) are served directly; everything else goes to Flask
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ flask.wsgi/$1 [QSA,PT,L]
