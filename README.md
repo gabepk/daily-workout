@@ -24,7 +24,28 @@ python app.py
 
 Then open <http://127.0.0.1:5000>.
 
-The SQLite database is created automatically on first run.
+The SQLite database is created automatically on first run under `private/`.
+
+## Deploying to HelioHost
+
+The repo deploys into `httpdocs`, so two files make Apache run Flask instead of
+serving static files:
+
+- `flask.wsgi` — the WSGI entry point
+- `.htaccess` — rewrites requests to `flask.wsgi` and blocks `/private`
+
+mod_wsgi runs as the Apache user, not your hosting account user, so the app
+cannot create or write files owned by your account. Before the first request:
+
+1. Create `httpdocs/private` in Plesk File Manager and set permissions to `777`.
+2. Upload your `workout.db` into it and set the file permissions to `666`.
+
+SQLite needs to write both the database file and its journal files in that
+directory, hence the loose permissions. `.htaccess` blocks HTTP access to
+`/private`, so the database is not downloadable.
+
+After changing `flask.wsgi` or the Python code, HelioHost's WSGI cache can take
+up to two hours to pick it up.
 
 ## Tests
 
@@ -42,7 +63,7 @@ templates/index.html    App shell and dialogs
 static/css/styles.css   Styling
 static/js/app.js        Frontend behaviour
 tests/test_app.py       API tests
-workout.db              Created on first run (ignored by git)
+private/workout.db      Created on first run (ignored by git)
 ```
 
 ## API overview
