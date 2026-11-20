@@ -9,7 +9,6 @@ A small, local workout tracker for the whole household. Everyone gets their own 
 - Check off today's exercises independently
 - Automatic progress ring and daily summary
 - History for each person: current streak, best streak, active days, 30-day rate, a 14-day chart and a 52-week heatmap
-- Data stored locally in SQLite (`workout.db`)
 - Responsive layout for desktop and mobile
 
 

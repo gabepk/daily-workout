@@ -9,7 +9,7 @@ from pathlib import Path
 from flask import Flask, current_app, g, jsonify, render_template, request
 
 BASE_DIR = Path(__file__).resolve().parent
-DEFAULT_DB = BASE_DIR / "workout.db"
+DEFAULT_DB = BASE_DIR / "private/workout.db"
 COLOR_RE = re.compile(r"^#[0-9a-fA-F]{6}$")
 DEFAULT_USERS = [
     ("Test", "🌿", "#D8F26A"),
